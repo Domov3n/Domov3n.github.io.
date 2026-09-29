@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Domov3nok | Streamer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --purple: #9146FF;
+      --dark-purple: #6441a5;
+      --pink: #FF6AE8;
+      --cyan: #00D4FF;
+      --dark: #0a0a0f;
+      --card-bg: #12121e;
+      --card-border: rgba(145, 70, 255, 0.3);
+      --text: #e8e8ff;
+      --subtext: #9999bb;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--dark);
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── PARTICLES CANVAS ── */
+    #particles-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── NAVBAR ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 60px;
+      background: rgba(10,10,15,0.85);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .nav-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--purple), var(--pink), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 30px;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--subtext);
+      text-decoration: none;
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      transition: color 0.3s;
+      position: relative;
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: -4px; left: 0;
+      width: 0; height: 2px;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      transition: width 0.3s;
+    }
+
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after { width: 100%; }
+
+    /* ── HERO ── */
+    #home {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 100px 20px 60px;
+      z-index: 1;
+    }
+
+    .hero-content { max-width: 780px; }
+
+    .hero-avatar {
+      width: 150px; height: 150px;
+      border-radius: 50%;
+      border: 4px solid transparent;
+      background: linear-gradient(var(--card-bg), var(--card-bg)) padding-box,
+                  linear-gradient(135deg, var(--purple), var(--pink), var(--cyan)) border-box;
+      margin: 0 auto 30px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 5rem;
+      animation: float 4s ease-in-out infinite;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-avatar::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 30% 30%, rgba(145,70,255,0.3), transparent 60%);
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50%       { transform: translateY(-14px); }
+    }
+
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255,50,50,0.2);
+      border: 1px solid rgba(255,50,50,0.5);
+      color: #ff5555;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      padding: 5px 14px;
+      border-radius: 20px;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+      animation: pulse-badge 2s ease-in-out infinite;
+    }
+
+    .live-dot {
+      width: 8px; height: 8px;
+      background: #ff4444;
+      border-radius: 50%;
+      animation: blink 1.2s ease-in-out infinite;
+    }
+
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+    @keyframes pulse-badge {
+      0%,100%{ box-shadow: 0 0 0 0 rgba(255,50,50,0.3); }
+      50%     { box-shadow: 0 0 0 8px rgba(255,50,50,0); }
+    }
+
+    .hero-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 900;
+      line-height: 1.1;
+      background: linear-gradient(135deg, #fff 0%, var(--purple) 40%, var(--pink) 70%, var(--cyan) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 16px;
+      letter-spacing: 3px;
+    }
+
+    .hero-sub {
+      font-size: 1.25rem;
+      color: var(--subtext);
+      margin-bottom: 40px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    .hero-sub span {
+      color: var(--cyan);
+    }
+
+    .hero-buttons {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 32px;
+      border-radius: 50px;
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: transform 0.25s, box-shadow 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(rgba(255,255,255,0.15), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .btn:hover::before { opacity: 1; }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--purple), var(--dark-purple));
+      color: #fff;
+      box-shadow: 0 0 30px rgba(145,70,255,0.5);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 0 50px rgba(145,70,255,0.8);
+    }
+
+    .btn-donate {
+      background: linear-gradient(135deg, #ff9a00, #ff4d4d);
+      color: #fff;
+      box-shadow: 0 0 30px rgba(255,100,0,0.4);
+    }
+
+    .btn-donate:hover {
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 0 50px rgba(255,100,0,0.7);
+    }
+
+    /* ── SECTION BASE ── */
+    section {
+      position: relative;
+      z-index: 1;
+      padding: 90px 40px;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .section-title {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.6rem, 4vw, 2.4rem);
+      font-weight: 900;
+      text-align: center;
+      margin-bottom: 14px;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      letter-spacing: 2px;
+    }
+
+    .section-line {
+      width: 80px; height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--pink), var(--cyan));
+      border-radius: 4px;
+      margin: 0 auto 50px;
+    }
+
+    /* ── SOCIAL CARDS ── */
+    #socials { padding-top: 20px; }
+
+    .socials-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+      gap: 24px;
+    }
+
+    .social-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 20px;
+      padding: 34px 24px;
+      text-align: center;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .social-card::before {
+      content: '';
+      position: absolute;
+      top: -60%; left: -60%;
+      width: 220%; height: 220%;
+      background: radial-gradient(circle, var(--glow-color, rgba(145,70,255,0.12)), transparent 60%);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+
+    .social-card:hover::before { opacity: 1; }
+
+    .social-card:hover {
+      transform: translateY(-8px) scale(1.03);
+      border-color: var(--glow-color, var(--purple));
+      box-shadow: 0 10px 40px var(--glow-color, rgba(145,70,255,0.3));
+    }
+
+    .social-icon-wrap {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--icon-bg, rgba(145,70,255,0.15));
+      border: 2px solid var(--glow-color, rgba(145,70,255,0.4));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 2rem;
+      margin: 0 auto 18px;
+      color: var(--icon-color, var(--purple));
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .social-card:hover .social-icon-wrap {
+      transform: rotate(-8deg) scale(1.15);
+      box-shadow: 0 0 20px var(--glow-color, rgba(145,70,255,0.5));
+    }
+
+    .social-card h3 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 1px;
+    }
+
+    .social-card p {
+      color: var(--subtext);
+      font-size: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .social-card .arrow {
+      display: inline-block;
+      margin-top: 16px;
+      font-size: 0.8rem;
+      color: var(--glow-color, var(--purple));
+      font-weight: 700;
+      letter-spacing: 1px;
+      transition: transform 0.25s;
+    }
+
+    .social-card:hover .arrow { transform: translateX(5px); }
+
+    /* ── SCHEDULE ── */
+    #schedule { padding-bottom: 30px; }
+
+    .schedule-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 16px;
+    }
+
+    .day-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px 14px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s, border-color 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .day-card.stream-day {
+      border-color: rgba(145,70,255,0.6);
+    }
+
+    .day-card.stream-day::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+    }
+
+    .day-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 8px 30px rgba(145,70,255,0.25);
+    }
+
+    .day-name {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--subtext);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+    }
+
+    .day-status {
+      font-size: 1.6rem;
+      margin-bottom: 10px;
+    }
+
+    .day-time {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .day-off { color: var(--subtext); font-size: 0.85rem; }
+
+    .stream-tag {
+      display: inline-block;
+      background: linear-gradient(135deg, var(--purple), var(--dark-purple));
+      color: #fff;
+      font-size: 0.7rem;
+      font-family: 'Orbitron', sans-serif;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-top: 8px;
+      letter-spacing: 1px;
+    }
+
+    /* ── ABOUT ── */
+    .about-box {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 24px;
+      padding: 50px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      align-items: center;
+    }
+
+    .about-text h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.5rem;
+      font-weight: 900;
+      margin-bottom: 16px;
+      background: linear-gradient(90deg, var(--purple), var(--cyan));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .about-text p {
+      color: var(--subtext);
+      line-height: 1.8;
+      font-size: 1.05rem;
+      margin-bottom: 12px;
+    }
+
+    .about-text p span { color: var(--pink); font-weight: 700; }
+
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .stat-item {
+      background: rgba(145,70,255,0.08);
+      border: 1px solid rgba(145,70,255,0.2);
+      border-radius: 16px;
+      padding: 24px 20px;
+      text-align: center;
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+
+    .stat-item:hover {
+      transform: scale(1.05);
+      box-shadow: 0 0 20px rgba(145,70,255,0.3);
+    }
+
+    .stat-number {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      background: linear-gradient(135deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--subtext);
+      margin-top: 6px;
+      font-weight: 600;
+      letter-spacing: 1px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      position: relative;
+      z-index: 1;
+      background: rgba(10,10,15,0.9);
+      border-top: 1px solid var(--card-border);
+      padding: 40px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .footer-logo {
+      font-family: 'Orbitron', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 900;
+      background: linear-gradient(90deg, var(--purple), var(--pink));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 20px;
+    }
+
+    .footer-links a {
+      color: var(--subtext);
+      font-size: 1.4rem;
+      transition: color 0.3s, transform 0.3s;
+      display: inline-block;
+    }
+
+    .footer-links a:hover { color: var(--purple); transform: scale(1.3) rotate(-5deg); }
+
+    .footer-copy {
+      color: var(--subtext);
+      font-size: 0.85rem;
+    }
+
+    /* ── DONATE BANNER ── */
+    .donate-banner {
+      position: relative;
+      z-index: 1;
+      background: linear-gradient(135deg, rgba(255,100,0,0.12), rgba(255,50,50,0.08));
+      border: 1px solid rgba(255,120,0,0.3);
+      border-radius: 24px;
+      padding: 50px 40px;
+      text-align: center;
+      margin: 0 40px 80px;
+      max-width: 1120px;
+      margin-left: auto;
+      margin-right: auto;
+      overflow: hidden;
+    }
+
+    .donate-banner::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 50% 50%, rgba(255,100,0,0.08), transparent 60%);
+    }
+
+    .donate-banner h2 {
+      font-family: 'Orbitron', sans-serif;
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 900;
+      margin-bottom: 14px;
+      background: linear-gradient(90deg, #ff9a00, #ff4d4d);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .donate-banner p {
+      color: var(--subtext);
+      margin-bottom: 28px;
+      font-size: 1.1rem;
+    }
+
+    /* ── GLOW BG BLOBS ── */
+    .blob {
+      position: fixed;
+      border-radius: 50%;
+      filter: blur(80px);
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.25;
+    }
+
+    .blob1 {
+      width: 500px; height: 500px;
+      background: var(--purple);
+      top: -150px; right: -150px;
+    }
+
+    .blob2 {
+      width: 400px; height: 400px;
+      background: var(--pink);
+      bottom: 10%; left: -150px;
+    }
+
+    .blob3 {
+      width: 300px; height: 300px;
+      background: var(--cyan);
+      top: 50%; right: 10%;
+    }
+
+    /* ── TOOLTIP ── */
+    [data-tooltip] {
+      position: relative;
+    }
+    [data-tooltip]::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(20,20,35,0.95);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      font-size: 0.75rem;
+      font-family: 'Rajdhani', sans-serif;
+      padding: 6px 12px;
+      border-radius: 8px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+      z-index: 999;
+    }
+    [data-tooltip]:hover::after { opacity: 1; }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 900px) {
+      nav { padding: 16px 24px; }
+      .nav-links { gap: 16px; }
+      .about-box {
+        grid-template-columns: 1fr;
+        padding: 30px 24px;
+      }
+      footer { padding: 30px 24px; flex-direction: column; align-items: flex-start; }
+    }
+
+    @media (max-width: 600px) {
+      .nav-links { display: none; }
+      section { padding: 70px 20px; }
+      .donate-banner { margin: 0 20px 60px; padding: 36px 20px; }
+    }
+
+    /* ── SCROLL REVEAL ── */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* ── CURSOR ── */
+    .cursor {
+      width: 22px; height: 22px;
+      border: 2px solid var(--purple);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.12s ease, background 0.2s ease;
+      transform: translate(-50%, -50%);
+    }
+    .cursor.clicking { background: rgba(145,70,255,0.3); transform: translate(-50%,-50%) scale(1.5); }
+  </style>
+</head>
+<body>
+
+  <!-- Custom Cursor -->
+  <div class="cursor" id="cursor"></div>
+
+  <!-- Background Blobs -->
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+
+  <!-- Particles -->
+  <canvas id="particles-canvas"></canvas>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">DOMOV3NOK</div>
+    <ul class="nav-links">
+      <li><a href="#home">Главная</a></li>
+      <li><a href="#about">Обо мне</a></li>
+      <li><a href="#socials">Соцсети</a></li>
+      <li><a href="#schedule">Расписание</a></li>
+      <li><a href="#donate">Донат</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <section id="home">
+    <div class="hero-content">
+      <div class="hero-avatar">🏠</div>
+      <div class="live-badge">
+        <span class="live-dot"></span>
+        СТРИМЫ ОНЛАЙН
+      </div>
+      <h1 class="hero-title">DOMOV3NOK</h1>
+      <p class="hero-sub">Твой уютный <span>домашний</span> стример</p>
+      <div class="hero-buttons">
+        <a href="https://www.twitch.tv/domov3n_ok" target="_blank" class="btn btn-primary">
+          <i class="fab fa-twitch"></i> Смотреть стрим
+        </a>
+        <a href="https://www.donationalerts.com/r/domov3nok" target="_blank" class="btn btn-donate">
+          <i class="fas fa-heart"></i> Задонатить
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section id="about">
+    <h2 class="section-title reveal">ОБО МНЕ</h2>
+    <div class="section-line reveal"></div>
+    <div class="about-box reveal">
+      <div class="about-text">
+        <h2>Привет, я Domov3nok! 👋</h2>
+        <p>Я уютный стример, который создаёт <span>атмосферу дома</span> на каждом стриме. Здесь тебе всегда рады!</p>
+        <p>Стримлю разнообразные игры, общаюсь с чатом и стараюсь сделать каждый эфир <span>особенным</span>.</p>
+        <p>Заходи — вместе веселее! <span>♥</span></p>
+      </div>
+      <div class="about-stats">
+        <div class="stat-item">
+          <div class="stat-number">🎮</div>
+          <div class="stat-label">ИГРЫ</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">💬</div>
+          <div class="stat-label">ЧАТ</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">🏆</div>
+          <div class="stat-label">ИВЕНТЫ</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">❤️</div>
+          <div class="stat-label">УЮТ</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SOCIALS -->
+  <section id="socials">
+    <h2 class="section-title reveal">СОЦИАЛЬНЫЕ СЕТИ</h2>
+    <div class="section-line reveal"></div>
+    <div class="socials-grid">
+
+      <a href="https://www.twitch.tv/domov3n_ok" target="_blank" class="social-card reveal"
+         style="--glow-color: rgba(145,70,255,0.5); --icon-bg: rgba(145,70,255,0.12); --icon-color: #9146FF;"
+         data-tooltip="Смотреть стримы">
+        <div class="social-icon-wrap"><i class="fab fa-twitch"></i></div>
+        <h3>TWITCH</h3>
+        <p>Живые стримы, игры и общение с чатом</p>
+        <span class="arrow">Перейти →</span>
+      </a>
+
+      <a href="https://t.me/TwichDomov3n" target="_blank" class="social-card reveal"
+         style="--glow-color: rgba(0,136,204,0.5); --icon-bg: rgba(0,136,204,0.12); --icon-color: #29a9eb;"
+         data-tooltip="Подписаться на канал">
+        <div class="social-icon-wrap"><i class="fab fa-telegram"></i></div>
+        <h3>TELEGRAM</h3>
+        <p>Новости, анонсы стримов и клипы</p>
+        <span class="arrow">Перейти →</span>
+      </a>
+
+      <a href="https://discord.gg/5ndpMfHpA" target="_blank" class="social-card reveal"
+         style="--glow-color: rgba(88,101,242,0.5); --icon-bg: rgba(88,101,242,0.12); --icon-color: #5865F2;"
+         data-tooltip="Вступить в сервер">
+        <div class="social-icon-wrap"><i class="fab fa-discord"></i></div>
+        <h3>DISCORD</h3>
+        <p>Общение с сообществом и ивенты</p>
+        <span class="arrow">Перейти →</span>
+      </a>
+
+      <a href="https://www.donationalerts.com/r/domov3nok" target="_blank" class="social-card reveal"
+         style="--glow-color: rgba(255,120,0,0.5); --icon-bg: rgba(255,120,0,0.12); --icon-color: #ff9a00;"
+         data-tooltip="Поддержать стримера">
+        <div class="social-icon-wrap"><i class="fas fa-gift"></i></div>
+        <h3>DONATIONALERTS</h3>
+        <p>Поддержи стримера донатом</p>
+        <span class="arrow">Перейти →</span>
+      </a>
+
+    </div>
+  </section>
+
+  <!-- SCHEDULE -->
+  <section id="schedule">
+    <h2 class="section-title reveal">РАСПИСАНИЕ СТРИМОВ</h2>
+    <div class="section-line reveal"></div>
+    <div class="schedule-grid">
+
+      <div class="day-card stream-day reveal">
+        <div class="day-name">ПН</div>
+        <div class="day-status">🔥</div>
+        <div class="day-time">20:00</div>
+        <span class="stream-tag">СТРИМ</span>
+      </div>
+<div class="day-card reveal">
+        <div class="day-name">ВТ</div>
+        <div class="day-status">😴</div>
+        <div class="day-off">Выходной</div>
+      </div>
+
+    <div class="day-card stream-day reveal">
+        <div class="day-name">СР</div>
+        <div class="day-status">🔥</div>
+        <div class="day-time">20:00</div>
+        <span class="stream-tag">СТРИМ</span>
+      </div>
+
+      <div class="day-card stream-day reveal">
+        <div class="day-name">ЧТ</div>
+        <div class="day-status">🔥</div>
+        <div class="day-time">20:00</div>
+        <span class="stream-tag">СТРИМ</span>
+      </div>
+
+      <div class="day-card stream-day reveal">
+        <div class="day-name">ПТ</div>
+        <div class="day-status">🔥</div>
+        <div class="day-time">20:00</div>
+        <span class="stream-tag">СТРИМ</span>
+      </div>
+
+      <div class="day-card reveal">
+        <div class="day-name">СБ</div>
+        <div class="day-status">😴</div>
+        <div class="day-off">Выходной</div>
+      </div>
+
+     <div class="day-card reveal">
+        <div class="day-name">ВС</div>
+        <div class="day-status">😴</div>
+        <div class="day-off">Выходной</div>
+      </div>
+
+    </div>
+    <p style="text-align:center; color: var(--subtext); margin-top: 24px; font-size: 0.95rem;">
+      ⚠️ Расписание может меняться — следи за анонсами в <a href="https://t.me/TwichDomov3n" style="color:var(--cyan); text-decoration:none;">Telegram</a>
+    </p>
+  </section>
+
+  <!-- DONATE BANNER -->
+  <div class="donate-banner reveal" id="donate">
+    <h2>❤️ ПОДДЕРЖИ DOMOV3NOK</h2>
+    <p>Каждый донат помогает делать стримы лучше и длиннее!</p>
+    <a href="https://www.donationalerts.com/r/domov3nok" target="_blank" class="btn btn-donate">
+      <i class="fas fa-heart"></i> Задонатить сейчас
+    </a>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">DOMOV3NOK</div>
+    <div class="footer-links">
+      <a href="https://www.twitch.tv/domov3n_ok" target="_blank" data-tooltip="Twitch" style="color:#9146FF">
+        <i class="fab fa-twitch"></i>
+      </a>
+      <a href="https://t.me/TwichDomov3n" target="_blank" data-tooltip="Telegram" style="color:#29a9eb">
+        <i class="fab fa-telegram"></i>
+      </a>
+      <a href="https://discord.gg/5ndpMfHpA" target="_blank" data-tooltip="Discord" style="color:#5865F2">
+        <i class="fab fa-discord"></i>
+      </a>
+      <a href="https://www.donationalerts.com/r/domov3nok" target="_blank" data-tooltip="Донат" style="color:#ff9a00">
+        <i class="fas fa-gift"></i>
+      </a>
+    </div>
+    <div class="footer-copy">© 2025 Domov3nok. Все права защищены.</div>
+  </footer>
+
+  <script>
+    /* ── CUSTOM CURSOR ── */
+    const cursor = document.getElementById('cursor');
+    document.addEventListener('mousemove', e => {
+      cursor.style.left = e.clientX + 'px';
+      cursor.style.top  = e.clientY + 'px';
+    });
+    document.addEventListener('mousedown', () => cursor.classList.add('clicking'));
+    document.addEventListener('mouseup',   () => cursor.classList.remove('clicking'));
+
+    /* ── PARTICLES ── */
+    const canvas = document.getElementById('particles-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() {
+      canvas.width  = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    resizeCanvas();
+    window.addEventListener('resize', resizeCanvas);
+
+    class Particle {
+      constructor() { this.reset(); }
+      reset() {
+        this.x    = Math.random() * canvas.width;
+        this.y    = Math.random() * canvas.height;
+        this.size = Math.random() * 2.5 + 0.5;
+        this.speedX = (Math.random() - 0.5) * 0.5;
+        this.speedY = (Math.random() - 0.5) * 0.5;
+        const colors = ['rgba(145,70,255,', 'rgba(255,106,232,', 'rgba(0,212,255,'];
+        this.color = colors[Math.floor(Math.random() * colors.length)];
+        this.alpha = Math.random() * 0.6 + 0.1;
+      }
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.x < 0 || this.x > canvas.width || this.y < 0 || this.y > canvas.height) this.reset();
+      }
+      draw() {
+        ctx.beginPath();
+        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx.fillStyle = this.color + this.alpha + ')';
+        ctx.fill();
+      }
+    }
+
+    for (let i = 0; i < 100; i++) particles.push(new Particle());
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.forEach(p => { p.update(); p.draw(); });
+      requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    /* ── SCROLL REVEAL ── */
+    const reveals = document.querySelectorAll('.reveal');
+    const observer = new IntersectionObserver(entries => {
+      entries.forEach((entry, i) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => entry.target.classList.add('visible'), i * 80);
+        }
+      });
+    }, { threshold: 0.1 });
+    reveals.forEach(el => observer.observe(el));
+
+    /* ── GLITCH TITLE ── */
+    const title = document.querySelector('.hero-title');
+    setInterval(() => {
+      title.style.textShadow = `${Math.random()*6-3}px 0 rgba(145,70,255,0.8), ${Math.random()*6-3}px 0 rgba(0,212,255,0.6)`;
+      setTimeout(() => title.style.textShadow = 'none', 100);
+    }, 3500);
+
+    /* ── NAV ACTIVE ── */
+    window.addEventListener('scroll', () => {
+      const nav = document.querySelector('nav');
+      nav.style.background = window.scrollY > 50
+        ? 'rgba(10,10,15,0.97)'
+        : 'rgba(10,10,15,0.85)';
+    });
+  </script>
+</body>
+</html>
